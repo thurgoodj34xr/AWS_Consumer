@@ -14,10 +14,10 @@ public class Widget {
 
     // Constructor
     public Widget(String requestType, String requestId, String widgetId, String owner) {
-        this.requestType = requestType;
         this.requestId = requestId;
         this.widgetId = widgetId;
-        this.owner = owner;
+        setRequestType(requestType);
+        setOwner(owner);
     }
 
     // Getters and Setters
@@ -50,6 +50,10 @@ public class Widget {
 
     public String getOwner() {
         return owner;
+    }
+
+    public String getOwnerURLString(){
+        return owner.toLowerCase().replace(" ", "-");
     }
 
     public void setOwner(String owner) {
