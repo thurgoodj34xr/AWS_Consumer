@@ -1,0 +1,24 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+ 
+}
+
+application {
+    mainClass = 'main.Consumer'
+}
+
+jar {
+    manifest {
+        attributes(
+            'Main-Class': 'main.Consumer'  // Updated to match package
+        )
+    }
+}
