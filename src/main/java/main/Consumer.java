@@ -9,4 +9,8 @@ public class Consumer {
         System.exit(0);
     }
 
+    public static void listenToS3Bucket(String bucketName){
+        
+    }
+
 }
