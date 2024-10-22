@@ -1,4 +1,8 @@
 *.pdf
+*.jar
 build/
 .gradle/
-
+logs/
+sample-requests/
+*.zip
+*.json
