@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public class Widget {
-    private String requestType; 
+    private String type; 
     private String requestId;
     private String widgetId;
     private String owner;
@@ -12,24 +12,38 @@ public class Widget {
     private String description;
     private List<OtherAttribute> otherAttributes;
 
+    // Default Constructor
+    public Widget() {}
+
     // Constructor
     public Widget(String requestType, String requestId, String widgetId, String owner) {
         this.requestId = requestId;
         this.widgetId = widgetId;
-        setRequestType(requestType);
+        setType(requestType);
         setOwner(owner);
     }
 
+        // Constructor
+        public Widget(String requestType, String requestId, String widgetId, String owner, String label, String description, List<OtherAttribute>otherAttributes) {
+            this.requestId = requestId;
+            this.widgetId = widgetId;
+            setType(requestType);
+            setOwner(owner);
+            this.label = label;
+            this.description = description;
+            this.otherAttributes = otherAttributes;
+        }
+
     // Getters and Setters
-    public String getRequestType() {
-        return requestType;
+    public String getType() {
+        return type;
     }
 
-    public void setRequestType(String requestType) {
-        if (!Pattern.matches("WidgetCreateRequest|WidgetDeleteRequest|WidgetUpdateRequest", requestType)) {
+    public void setType(String requestType) {
+        if (!Pattern.matches("create|delete|update", requestType)) {
             throw new IllegalArgumentException("Invalid type");
         }
-        this.requestType = requestType;
+        this.type = requestType;
     }
 
     public String getRequestId() {
@@ -94,6 +108,9 @@ public class Widget {
     public static class OtherAttribute {
         private String name;
         private String value;
+
+        // Default Constructor
+        public OtherAttribute(){}
 
         // Constructor
         public OtherAttribute(String name, String value) {

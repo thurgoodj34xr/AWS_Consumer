@@ -4,6 +4,7 @@ import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
@@ -11,6 +12,9 @@ import software.amazon.awssdk.services.s3.model.S3Object;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 public class Consumer {
 
@@ -24,7 +28,8 @@ public class Consumer {
         .credentialsProvider(ProfileCredentialsProvider.create())
         .build();
 
-        checkForRequests(s3);
+        String key = checkForRequests(s3);
+        requestKeyWidget(s3, key);
 
         System.exit(0);
     }
@@ -60,5 +65,33 @@ public class Consumer {
             System.out.println("The bucket is empty.");
         }
         return null;
+    }
+
+    public static Widget requestKeyWidget(S3Client s3Client, String key){
+         GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+                .bucket(REQUEST_BUCKET)
+                .key(key)
+                .build();
+
+            // Retrieve the object as a string
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(s3Client.getObject(getObjectRequest)))) {
+                StringBuilder jsonStringBuilder = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    jsonStringBuilder.append(line);
+                }
+                String jsonString = jsonStringBuilder.toString();
+
+                // Parse the JSON string into a Widget object
+                ObjectMapper mapper = new ObjectMapper();
+                Widget widget = mapper.readValue(jsonString, Widget.class);
+                
+                System.out.println("Widget object created: " + widget);
+                return widget;
+            } catch (Exception e) {
+                System.out.println("Error retrieving or parsing the object: " + e.getMessage());
+            }
+            return null;
     }
 }
