@@ -52,4 +52,11 @@ public class WidgetTest {
 
         assertEquals("kellen-moore", widget.getOwnerURLString());
     }
+
+    @Test
+    void testKeyOutput() {
+        Widget widget = new Widget("WidgetCreateRequest", "123", "widget-456", "Kellen Moore");
+
+        assertEquals("widgets/kellen-moore/widget-456", widget.getKey());
+    }
 }

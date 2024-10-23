@@ -87,6 +87,10 @@ public class Widget {
         this.otherAttributes = otherAttributes;
     }
 
+    public String getKey(){
+        return "widgets/"+getOwnerURLString()+"/"+widgetId;
+    }
+
     public static class OtherAttribute {
         private String name;
         private String value;
