@@ -28,10 +28,10 @@ public class S3 {
         // Upload JSON object to S3 as a string
         try{
             s3Client.putObject(putObjectRequest, RequestBody.fromString(mapper.writeValueAsString(widget)));
-            System.out.println("JSON object uploaded successfully!");
+            Consumer.logger.debug("JSON object uploaded successfully!");
             return true;
         }catch (JsonProcessingException e){
-            System.out.println("JSON Object couldn't be converted");                
+            Consumer.logger.debug("JSON Object couldn't be converted");                
         }
         return false;
     }
@@ -45,10 +45,10 @@ public class S3 {
         ListObjectsV2Response listResponse = s3Client.listObjectsV2(listObjectsRequest);
         if (!listResponse.contents().isEmpty()) {
             S3Object firstObject = listResponse.contents().get(0);
-            System.out.println("First Key: " + firstObject.key());
+            Consumer.logger.debug("First Key: " + firstObject.key());
             return firstObject.key();
         } else {
-            System.out.println("The bucket is empty.");
+            Consumer.logger.debug("The bucket is empty.");
         }
         return null;
     }
@@ -73,10 +73,10 @@ public class S3 {
                 ObjectMapper mapper = new ObjectMapper();
                 Widget widget = mapper.readValue(jsonString, Widget.class);
                 
-                System.out.println("Widget object created: " + widget);
+                Consumer.logger.debug("Widget object created: " + widget);
                 return widget;
             } catch (Exception e) {
-                System.out.println("Error retrieving or parsing the object: " + e.getMessage());
+                Consumer.logger.debug("Error retrieving or parsing the object: " + e.getMessage());
             }
             return null;
     }
@@ -90,10 +90,10 @@ public class S3 {
 
             s3Client.deleteObject(deleteObjectRequest);
             // Succeeds if no throw
-            System.out.println("Object deleted successfully!");
+            Consumer.logger.debug("Object deleted successfully!");
             return true;
         } catch (S3Exception e) {
-            System.err.println("Error deleting object: " + e.getMessage());
+            Consumer.logger.debug("Error deleting object: " + e.getMessage());
         }
         return false;
     }

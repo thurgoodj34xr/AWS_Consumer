@@ -16,6 +16,8 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1' // From Gradle.org for unit tests
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher' // From Gradle.org unit tests
     implementation 'info.picocli:picocli:4.7.6' // Cli
+    implementation 'org.slf4j:slf4j-api:2.0.7' // Logging
+    implementation 'ch.qos.logback:logback-classic:1.4.11' // Logging
 }
 
 application {

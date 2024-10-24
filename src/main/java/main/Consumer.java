@@ -7,10 +7,16 @@ import software.amazon.awssdk.services.s3.S3Client;
 
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
 
 public class Consumer implements Runnable {
+     // Create a logger instance
+    public static final Logger logger = LoggerFactory.getLogger(Consumer.class);
+
     @Option(names = {"--request-bucket", "-rb"}, 
     description = "The request bucket name",
     defaultValue = "usu-cs5250-hobbes-requests")
@@ -27,17 +33,17 @@ public class Consumer implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("Request Bucket: " + requestBucket);
+        logger.info("Request Bucket: " + requestBucket);
         S3Client s3 = S3Client.builder()
         .region(Region.US_EAST_1)
         .credentialsProvider(ProfileCredentialsProvider.create())
         .build();
     
         if (widgetTable != null)  {
-            System.out.println("Using DynamoDB Widget Table: " + widgetTable);
+            logger.info("Using DynamoDB Widget Table: " + widgetTable);
             loopPostToDynamo(s3);
         } 
-        System.out.println("Using S3 Bucket: " + widgetBucket);
+        logger.info("Using S3 Bucket: " + widgetBucket);
         loopPostToS3(s3);
     }
     
@@ -94,7 +100,7 @@ public class Consumer implements Runnable {
             TimeUnit.MILLISECONDS.sleep(100);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            System.err.println("Sleep interrupted: " + e.getMessage());
+            logger.debug("Sleep interrupted: " + e.getMessage());
         }
     }
 }
