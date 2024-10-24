@@ -12,7 +12,7 @@ public class WidgetTest {
 
     @Test
     void testSerializeToJson() throws Exception {
-        Widget widget = new Widget("WidgetCreateRequest", "123", "widget-456", "Kellen Moore");
+        Widget widget = new Widget("create", "123", "widget-456", "Kellen Moore");
         widget.setLabel("Sample Widget");
         widget.setDescription("This is a sample widget.");
         widget.setOtherAttributes(Arrays.asList(
@@ -22,7 +22,7 @@ public class WidgetTest {
 
         String jsonResult = objectMapper.writeValueAsString(widget);
 
-        assertTrue(jsonResult.contains("\"requestType\":\"WidgetCreateRequest\""));
+        assertTrue(jsonResult.contains("\"type\":\"create\""));
         assertTrue(jsonResult.contains("\"widgetId\":\"widget-456\""));
         assertTrue(jsonResult.contains("\"owner\":\"Kellen Moore\""));
     }
@@ -38,7 +38,7 @@ public class WidgetTest {
 
     @Test
     void testInvalidOwnerFormat() {
-        Widget widget = new Widget("WidgetCreateRequest", "123", "widget-456", "Kellen Moore");
+        Widget widget = new Widget("create", "123", "widget-456", "Kellen Moore");
 
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             widget.setOwner("123John");
@@ -48,14 +48,14 @@ public class WidgetTest {
     }
     @Test
     void testOwnerURLConvert() {
-        Widget widget = new Widget("WidgetCreateRequest", "123", "widget-456", "Kellen Moore");
+        Widget widget = new Widget("create", "123", "widget-456", "Kellen Moore");
 
         assertEquals("kellen-moore", widget.getOwnerURLString());
     }
 
     @Test
     void testKeyOutput() {
-        Widget widget = new Widget("WidgetCreateRequest", "123", "widget-456", "Kellen Moore");
+        Widget widget = new Widget("create", "123", "widget-456", "Kellen Moore");
 
         assertEquals("widgets/kellen-moore/widget-456", widget.getKey());
     }
