@@ -4,6 +4,11 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '7.1.0'
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
 repositories {
     mavenCentral()
 }
@@ -23,14 +28,8 @@ dependencies {
 application {
     mainClass = 'main.Consumer'
 }
-
-jar {
-    manifest {
-        attributes(
-            'Main-Class': 'main.Consumer'  // Updated to match package
-        )
-    }
-}
+// Don't need default jar, need shadow jar
+tasks.jar.enabled = false
 
 // From Gradle.org
 tasks.named('test', Test) {
