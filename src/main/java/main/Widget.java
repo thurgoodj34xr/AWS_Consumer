@@ -1,7 +1,12 @@
 package main;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 public class Widget {
     private String type; 
@@ -104,6 +109,33 @@ public class Widget {
     public String getKey(){
         return "widgets/"+getOwnerURLString()+"/"+widgetId;
     }
+
+    public Map<String, AttributeValue> mapForDynamo() {
+        Map<String, AttributeValue> itemValues = new HashMap<>();
+    
+        itemValues.put("id", AttributeValue.builder().s(getWidgetId()).build());  
+        itemValues.put("type", AttributeValue.builder().s(getType()).build());
+        itemValues.put("requestId", AttributeValue.builder().s(getRequestId()).build());
+        itemValues.put("owner", AttributeValue.builder().s(getOwner()).build());
+        itemValues.put("label", AttributeValue.builder().s(getLabel()).build());
+        itemValues.put("description", AttributeValue.builder().s(getDescription()).build());
+    
+        // Handle otherAttributes as a list of maps
+        if (getOtherAttributes() != null && !getOtherAttributes().isEmpty()) {
+            List<AttributeValue> otherAttributesList = getOtherAttributes().stream()
+                .map(attr -> AttributeValue.builder()
+                    .m(Map.of(
+                        "name", AttributeValue.builder().s(attr.getName()).build(),
+                        "value", AttributeValue.builder().s(attr.getValue()).build()
+                    ))
+                    .build())
+                .collect(Collectors.toList());
+            itemValues.put("otherAttributes", AttributeValue.builder().l(otherAttributesList).build());
+        }
+    
+        return itemValues;
+    }
+
 
     public static class OtherAttribute {
         private String name;
