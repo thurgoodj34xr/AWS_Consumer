@@ -7,30 +7,62 @@ import software.amazon.awssdk.services.s3.S3Client;
 
 import java.util.concurrent.TimeUnit;
 
-public class Consumer {
+import picocli.CommandLine;
+import picocli.CommandLine.Option;
 
-    public static void main(String[] args) {
+public class Consumer implements Runnable {
+    @Option(names = {"--request-bucket", "-rb"}, 
+    description = "The request bucket name",
+    defaultValue = "usu-cs5250-hobbes-requests")
+    private static String requestBucket;
+
+    @Option(names = {"--widget-bucket", "-wb"}, 
+        description = "The widget bucket name",
+        defaultValue = "usu-cs5250-hobbes-web")  
+    private static String widgetBucket;
+
+    @Option(names = {"--dynamodb-widget-table", "-dwt"}, 
+        description = "The DynamoDB widget table name")
+    private static String widgetTable;
+
+    @Override
+    public void run() {
+        System.out.println("Request Bucket: " + requestBucket);
         S3Client s3 = S3Client.builder()
         .region(Region.US_EAST_1)
         .credentialsProvider(ProfileCredentialsProvider.create())
         .build();
+    
+        if (widgetTable != null)  {
+            System.out.println("Using DynamoDB Widget Table: " + widgetTable);
+            loopPostToDynamo(s3);
+        } 
+        System.out.println("Using S3 Bucket: " + widgetBucket);
+        loopPostToS3(s3);
+    }
+    
 
+    public static void main(String[] args) {
+
+        int exitCode = new CommandLine(new Consumer()).execute(args);
+
+        System.exit(exitCode);
     }
 
     private static void loopPostToS3(S3Client s3){
         
         while (true) {
-            String key = S3.checkForRequests(s3);
+            String key = S3.checkForRequests(s3, requestBucket);
             
             if (key.isEmpty()) {
                 sleepFor100Ms();
                 continue;
             }
 
-            Widget widget = S3.requestKeyWidget(s3, key);
+            Widget widget = S3.requestKeyWidget(s3, key, requestBucket);
             
-            if (S3.putWidgetS3Bucket(s3, widget)) {
-                S3.deleteKeyInS3(s3, key);
+            if (S3.putWidgetS3Bucket(s3, widget, widgetBucket)) {
+                S3.deleteKeyInS3(s3, key, requestBucket);
             }
         }
     }
@@ -42,17 +74,17 @@ public class Consumer {
                                             .build();
 
         while (true) {
-            String key = S3.checkForRequests(s3);
+            String key = S3.checkForRequests(s3, requestBucket);
             
             if (key.isEmpty()) {
                 sleepFor100Ms();
                 continue;
             }
 
-            Widget widget = S3.requestKeyWidget(s3, key);
+            Widget widget = S3.requestKeyWidget(s3, key, requestBucket);
             
-            if (DynamoDB.putWidgetToDynamoDB(dynamoDbClient, widget)) {
-                S3.deleteKeyInS3(s3, key);
+            if (DynamoDB.putWidgetToDynamoDB(dynamoDbClient, widget, widgetTable)) {
+                S3.deleteKeyInS3(s3, key, requestBucket);
             }
         }
     }

@@ -17,13 +17,11 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 public class S3 {
-    private static String REQUEST_BUCKET = "usu-cs5250-hobbes-requests";
-    private static String STORAGE_BUCKET = "usu-cs5250-hobbes-web";
     private static ObjectMapper mapper = new ObjectMapper();
 
-    public static boolean putWidgetS3Bucket(S3Client s3Client, Widget widget){
+    public static boolean putWidgetS3Bucket(S3Client s3Client, Widget widget, String storageBucket){
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-            .bucket(STORAGE_BUCKET)
+            .bucket(storageBucket)
             .key(widget.getKey())
             .build();
 
@@ -38,9 +36,9 @@ public class S3 {
         return false;
     }
 
-    public static String checkForRequests(S3Client s3Client){
+    public static String checkForRequests(S3Client s3Client, String requestBucket){
         ListObjectsV2Request listObjectsRequest = ListObjectsV2Request.builder()
-            .bucket(REQUEST_BUCKET)
+            .bucket(requestBucket)
             .maxKeys(1)
             .build();
 
@@ -55,9 +53,9 @@ public class S3 {
         return null;
     }
 
-    public static Widget requestKeyWidget(S3Client s3Client, String key){
+    public static Widget requestKeyWidget(S3Client s3Client, String key, String requestBucket){
          GetObjectRequest getObjectRequest = GetObjectRequest.builder()
-                .bucket(REQUEST_BUCKET)
+                .bucket(requestBucket)
                 .key(key)
                 .build();
 
@@ -83,10 +81,10 @@ public class S3 {
             return null;
     }
 
-    public static boolean deleteKeyInS3(S3Client s3Client, String key){
+    public static boolean deleteKeyInS3(S3Client s3Client, String key, String requestBucket){
                 try {
             DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
-                    .bucket(REQUEST_BUCKET)
+                    .bucket(requestBucket)
                     .key(key)
                     .build();
 

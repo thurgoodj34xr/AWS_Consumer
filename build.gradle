@@ -15,6 +15,7 @@ dependencies {
     implementation 'software.amazon.awssdk:core:2.20.0' // Core SDK
     testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1' // From Gradle.org for unit tests
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher' // From Gradle.org unit tests
+    implementation 'info.picocli:picocli:4.7.6' // Cli
 }
 
 application {

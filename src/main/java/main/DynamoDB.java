@@ -6,9 +6,9 @@ import software.amazon.awssdk.services.dynamodb.model.PutItemResponse;
 
 public class DynamoDB {
 
-    public static boolean putWidgetToDynamoDB(DynamoDbClient dynamoDbClient, Widget widget) {
+    public static boolean putWidgetToDynamoDB(DynamoDbClient dynamoDbClient, Widget widget, String tableName) {
         PutItemRequest request = PutItemRequest.builder()
-                .tableName("widgets")
+                .tableName(tableName)
                 .item(widget.mapForDynamo())
                 .build();
 
