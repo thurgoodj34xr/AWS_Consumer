@@ -15,10 +15,10 @@ public class DynamoDB {
         PutItemResponse response = dynamoDbClient.putItem(request);
 
         if (response.sdkHttpResponse().isSuccessful()) {
-        Consumer.logger.debug("Widget inserted into DynamoDB table.");
+        Consumer.logger.info("Widget inserted into DynamoDB table.");
         return true;
         }
-        Consumer.logger.debug("Widget was not inserted into DynamoDB table.");
+        Consumer.logger.info("Widget was not inserted into DynamoDB table.");
         return false;
     }
 }

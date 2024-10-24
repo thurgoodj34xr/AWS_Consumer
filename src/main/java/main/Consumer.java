@@ -1,6 +1,5 @@
 package main; 
 
-import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -36,7 +35,6 @@ public class Consumer implements Runnable {
         logger.info("Request Bucket: " + requestBucket);
         S3Client s3 = S3Client.builder()
         .region(Region.US_EAST_1)
-        .credentialsProvider(ProfileCredentialsProvider.create())
         .build();
     
         if (widgetTable != null)  {
@@ -60,7 +58,7 @@ public class Consumer implements Runnable {
         while (true) {
             String key = S3.checkForRequests(s3, requestBucket);
             
-            if (key.isEmpty()) {
+            if (key == null) {
                 sleepFor100Ms();
                 continue;
             }
@@ -76,7 +74,6 @@ public class Consumer implements Runnable {
     private static void loopPostToDynamo(S3Client s3){
         DynamoDbClient dynamoDbClient = DynamoDbClient.builder()
                                             .region(Region.US_EAST_1)
-                                            .credentialsProvider(ProfileCredentialsProvider.create())
                                             .build();
 
         while (true) {

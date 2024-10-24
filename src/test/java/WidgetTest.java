@@ -1,10 +1,13 @@
 import main.Widget;
+import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class WidgetTest {
 
@@ -22,7 +25,6 @@ public class WidgetTest {
 
         String jsonResult = objectMapper.writeValueAsString(widget);
 
-        assertTrue(jsonResult.contains("\"type\":\"create\""));
         assertTrue(jsonResult.contains("\"widgetId\":\"widget-456\""));
         assertTrue(jsonResult.contains("\"owner\":\"Kellen Moore\""));
     }
@@ -58,5 +60,30 @@ public class WidgetTest {
         Widget widget = new Widget("create", "123", "widget-456", "Kellen Moore");
 
         assertEquals("widgets/kellen-moore/widget-456", widget.getKey());
+    }
+    @Test
+    void testMapForDynamo_WithAllAttributes() {
+        Widget widget = new Widget("create", "123", "widget-456", "John Doe");
+        widget.setLabel("Sample Widget");
+        widget.setDescription("This is a sample widget.");
+
+        Widget.OtherAttribute attr1 = new Widget.OtherAttribute("color", "red");
+        Widget.OtherAttribute attr2 = new Widget.OtherAttribute("size", "large");
+        widget.setOtherAttributes(Arrays.asList(attr1, attr2));
+
+        Map<String, AttributeValue> result = widget.mapForDynamo();
+
+        assertEquals("widget-456", result.get("id").s());
+        assertEquals("John Doe", result.get("owner").s());
+        assertEquals("Sample Widget", result.get("label").s());
+        assertEquals("This is a sample widget.", result.get("description").s());
+
+        List<AttributeValue> otherAttributes = result.get("otherAttributes").l();
+        assertEquals(2, otherAttributes.size());
+
+        assertEquals("color", otherAttributes.get(0).m().get("name").s());
+        assertEquals("red", otherAttributes.get(0).m().get("value").s());
+        assertEquals("size", otherAttributes.get(1).m().get("name").s());
+        assertEquals("large", otherAttributes.get(1).m().get("value").s());
     }
 }

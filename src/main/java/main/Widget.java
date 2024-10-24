@@ -6,17 +6,22 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 public class Widget {
-    private String type; 
-    private String requestId;
     private String widgetId;
     private String owner;
     private String label;
     private String description;
     private List<OtherAttribute> otherAttributes;
-
+    
+    @JsonIgnore
+    private String type; 
+    @JsonIgnore
+    private String requestId;
+    
     // Default Constructor
     public Widget() {}
 
@@ -114,8 +119,6 @@ public class Widget {
         Map<String, AttributeValue> itemValues = new HashMap<>();
     
         itemValues.put("id", AttributeValue.builder().s(getWidgetId()).build());  
-        itemValues.put("type", AttributeValue.builder().s(getType()).build());
-        itemValues.put("requestId", AttributeValue.builder().s(getRequestId()).build());
         itemValues.put("owner", AttributeValue.builder().s(getOwner()).build());
         itemValues.put("label", AttributeValue.builder().s(getLabel()).build());
         itemValues.put("description", AttributeValue.builder().s(getDescription()).build());
