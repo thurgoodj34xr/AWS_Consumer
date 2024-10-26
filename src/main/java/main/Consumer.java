@@ -64,10 +64,13 @@ public class Consumer implements Runnable {
             }
 
             Widget widget = S3.requestKeyWidget(s3, key, requestBucket);
-            
-            if (S3.putWidgetS3Bucket(s3, widget, widgetBucket)) {
-                S3.deleteKeyInS3(s3, key, requestBucket);
+
+            if(widget.getType()=="create"){
+                if (S3.putWidgetS3Bucket(s3, widget, widgetBucket)) {
+                    S3.deleteKeyInS3(s3, key, requestBucket);
+                }
             }
+            
         }
     }
 
@@ -85,9 +88,10 @@ public class Consumer implements Runnable {
             }
 
             Widget widget = S3.requestKeyWidget(s3, key, requestBucket);
-            
-            if (DynamoDB.putWidgetToDynamoDB(dynamoDbClient, widget, widgetTable)) {
-                S3.deleteKeyInS3(s3, key, requestBucket);
+            if(widget.getType()=="create"){      
+                if (DynamoDB.putWidgetToDynamoDB(dynamoDbClient, widget, widgetTable)) {
+                    S3.deleteKeyInS3(s3, key, requestBucket);
+                }
             }
         }
     }
