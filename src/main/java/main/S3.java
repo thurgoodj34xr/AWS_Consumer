@@ -72,7 +72,6 @@ public class S3 {
                 String jsonString = jsonStringBuilder.toString();
 
                 // Parse the JSON string into a Widget object
-                ObjectMapper mapper = new ObjectMapper();
                 Widget widget = mapper.readValue(jsonString, Widget.class);
                 
                 Consumer.logger.info("Widget object created: " + widget);

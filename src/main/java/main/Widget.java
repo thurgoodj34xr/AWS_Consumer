@@ -21,6 +21,8 @@ public class Widget {
     private String type; 
     @JsonIgnore
     private String requestId;
+    @JsonIgnore
+    private String key;
     
     // Default Constructor
     public Widget() {}
@@ -76,6 +78,7 @@ public class Widget {
         return owner;
     }
 
+    @JsonIgnore
     public String getOwnerURLString(){
         return owner.toLowerCase().replace(" ", "-");
     }
