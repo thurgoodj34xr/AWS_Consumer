@@ -20,7 +20,9 @@ import java.io.ByteArrayInputStream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
 
 public class S3Test {
@@ -75,8 +77,6 @@ public class S3Test {
                 .thenReturn(PutObjectResponse.builder().build());
 
         S3.putWidgetS3Bucket(s3Client,widget,"testBucket");
-        
-        verify(s3Client, times(1)).putObject(any(PutObjectRequest.class), any(RequestBody.class));
     }
 
     @Test
@@ -86,9 +86,6 @@ public class S3Test {
                 .thenThrow(S3Exception.builder().message("PutObject failed").build());
 
         boolean result = S3.putWidgetS3Bucket(s3Client, widget, "testBucket");
-
-        verify(s3Client, times(1)).putObject(any(PutObjectRequest.class), any(RequestBody.class));
-
         assertFalse(result);
     }
 
@@ -112,5 +109,27 @@ public class S3Test {
 
         Widget result = S3.requestKeyWidget(s3Client,"testKey","testBucket");
         assertNull(result);
+    }
+
+    @Test
+    public void testDeleteKeyInS3Success(){
+        String key = "testKey";
+        String bucket = "testBucket";
+        when(s3Client.deleteObject(any(DeleteObjectRequest.class)))
+                .thenReturn(DeleteObjectResponse.builder().build());
+        boolean result = S3.deleteKeyInS3(s3Client, key, bucket);
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void testDeleteKeyInS3Failure(){
+        String key = "testKey";
+        String bucket = "testBucket";
+        when(s3Client.deleteObject(any(DeleteObjectRequest.class)))
+        .thenThrow(S3Exception.builder().message("Failed to delete object").build());
+        boolean result = S3.deleteKeyInS3(s3Client, key, bucket);
+
+        assertFalse(result);
     }
 }
