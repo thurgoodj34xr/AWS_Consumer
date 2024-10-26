@@ -32,6 +32,8 @@ public class S3 {
             return true;
         }catch (JsonProcessingException e){
             Consumer.logger.info("JSON Object couldn't be converted");                
+        }catch(S3Exception e){
+            Consumer.logger.info("S3 rejected put request");                
         }
         return false;
     }
