@@ -1,3 +1,5 @@
+# About
+This project was for an AWS class where we need to recieve notifications from a vendor and process the requests. This program is meant to be run in parralel with other instances of this application
 # Dependencies 
 - Gradle 8.10.2
 - JVM 17
